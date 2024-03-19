@@ -27,7 +27,7 @@ body:has(.card[data-color="green"]:hover) {
   }
 
   .full-page {
-    @apply flex h-full w-full text-xl px-16 pb-24;
+    @apply flex h-full w-full text-xl px-8 sm:px-16 sm:mt-32 py-10;
   }
 
   .head-text {
@@ -154,4 +154,23 @@ li {
   --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
     --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.img-container {
+  padding: 2rem 0;
+}
+
+.link-wrapper:after{
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: rgb(37 99 235 / var(--tw-text-opacity));
+  transition: all ease-in-out;
+}
+
+.link-wrapper:hover:after {
+  width: 100%;
 }

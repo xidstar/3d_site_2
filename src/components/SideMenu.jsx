@@ -34,7 +34,7 @@ const SideMenu = () => {
     return (
         <>
             {snap.isMenuOpen && (
-                <div className='absolute w-[500px] h-screen top-0 left-0 z-10 overflow-hidden'>
+                <div className='fixed w-[500px] h-full top-0 left-0 z-10 overflow-hidden'>
                     <motion.nav
                         animate={isOpen ? "open" : "closed"}
                     >

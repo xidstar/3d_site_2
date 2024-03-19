@@ -4,7 +4,7 @@ export const slideAnimation = (direction) => {
   return {
     initial: {
       x: direction === "left" ? -100 : direction === "right" ? 100 : 0,
-      y: direction === "up" ? 100 : direction === "down" ? -300 : 0,
+      y: direction === "up" ? 10 : direction === "down" ? -300 : 0,
       opacity: 0,
       transition: { ...transition, delay: 0.2 },
     },
@@ -75,7 +75,7 @@ export const carouselTextAnimation = {
 };
 
 export const headContentAnimation = {
-  initial: { y: 100, opacity: 0 },
+  initial: { y: 50, opacity: 0 },
   animate: { y: 0, opacity: 1 },
   transition: {
     type: "spring",

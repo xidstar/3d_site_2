@@ -13,7 +13,7 @@ const MenuBtn = () => {
     }
 
     return (
-        <div className={`circle top-3 z-20  bg-white rounded-full flex items-center justify-center ${snap.isMenuOpen ? "w-14 h-14" : "w-14 h-14" }`}>
+        <div className={`circle top-3 z-20 bg-white rounded-full flex md:hidden items-center justify-center ${snap.isMenuOpen ? "w-14 h-14" : "w-14 h-14" }`}>
             <button className='text-2xl' onClick={toggleMenu}>
                 {snap.isMenuOpen ? <GrClose /> : <SlMenu /> }
             </button>

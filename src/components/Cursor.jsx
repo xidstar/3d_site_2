@@ -31,7 +31,7 @@ const Cursor = () => {
   
     return (
         <>
-            {snap.isVisible && (
+            {snap.isVisible ? (
                 <div
                     style={{
                         position: 'fixed',
@@ -50,7 +50,26 @@ const Cursor = () => {
                 >
                     <GoArrowRight className='text-3xl' />
                 </div>
-            )}
+            )
+            :
+            (
+              <div
+                style={{
+                    position: 'fixed',
+                    left: position.x+2,
+                    top: position.y+2,
+                    transform: 'translate(-50%, -50%)',
+                    pointerEvents: 'none',
+                    width: '3rem',
+                    height: '3rem',
+                    borderRadius: '50%',
+                    border: '1px solid #333'
+                }}
+            >
+                
+            </div>
+            )
+            }
         </>
     );
   };

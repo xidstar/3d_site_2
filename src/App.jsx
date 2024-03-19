@@ -7,7 +7,7 @@ import TopNav from "./components/TopNav";
 
 const App = () => {
   return (
-    <main className="bg-stone-200">
+    <main className="bg-stone-200 w-full h-full m-0 p-0">
         <Router>
             <TopNav />
             {/* <Navbar /> */}

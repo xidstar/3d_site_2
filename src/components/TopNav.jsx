@@ -5,16 +5,24 @@ import { useSnapshot } from "valtio";
 import state from "../store";
 import SideMenu from './SideMenu';
 import MenuBtn from './MenuBtn';
+import PageLinks from './PageLinks';
+import Logo from './Logo';
 
 
 const TopNav = () => {
     
 
     return (
-        <div className='relative top-0 left-0 right-0 w-full h-[100px] flex items-center justify-between z-[100] px-5'>
-            <MenuBtn />
-            <SideMenu />
-            <input type="search" placeholder='Search' className='relative h-[2rem] rounded-md p-5' />
+        <div className='fixed top-0 left-0 right-0 w-full bg-[#fff] flex flex-col z-[100] p-5 shadow-xl'>
+            <div className="top w-full flex items-center justify-between">
+                <MenuBtn />
+                <SideMenu />
+                <Logo className="hidden sm:flex" />
+                <input type="search" placeholder='Search' className='relative h-[2rem] rounded-md p-5 bg-slate-100' />
+            </div>
+            <PageLinks />
+            
+           
         </div>
     )
 }
