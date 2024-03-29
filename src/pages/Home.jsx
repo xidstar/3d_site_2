@@ -1,194 +1,156 @@
-/* eslint-disable no-unused-vars */
-import React from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import React, { useRef, useEffect, useState, Suspense } from "react";
 import AnimatedText from '../components/AnimatedText';
-import { about, contract, industry, procurement, storefront, training } from '../assets'
-import { NavLink } from 'react-router-dom';
-import { useSnapshot } from "valtio";
-import state from "../store";
+import state from "../components/state";
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Html, useGLTF, useProgress } from '@react-three/drei';
+import { Section } from '../components/Section';
+import { a, useTransition } from "@react-spring/web";
+import { useInView } from "react-intersection-observer";
 
-import {
-  headContentAnimation,
-  cardVariants,
-  slideAnimation,
-  fadeAnimation,
-} from "../config/motion";
+function Model({ url }) {
+  const gltf = useGLTF(url, true)
+  return (<primitive object={gltf.scene} />)
+}
+
+const Lights = () => {
+  return (
+    <>
+      {/* Ambient Light illuminates lights for all objects */}
+      <ambientLight intensity={0.3} />
+      {/* Diretion light */}
+      <directionalLight position={[1, 1, 5]} intensity={1} />
+      <directionalLight
+        castShadow
+        position={[0, 10, 0]}
+        intensity={1.5}
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+        shadow-camera-far={50}
+        shadow-camera-left={-10}
+        shadow-camera-right={10}
+        shadow-camera-top={10}
+        shadow-camera-bottom={-10}
+      />
+      {/* Spotlight Large overhead light */}
+      <spotLight intensity={1} position={[1000, 0, 0]} castShadow />
+    </>
+  );
+};
+
+const HTMLContent = ({
+  domContent,
+  children,
+  bgColor,
+  modelPath,
+  position,
+}) => {
+  const ref = useRef();
+  useFrame(() => (ref.current.rotation.y += 0.01));
+  const [refItem, inView] = useInView({
+    threshold: 0,
+  });
+  useEffect(() => {
+    inView && (document.body.style.background = bgColor);
+  }, [inView]);
+  return (
+    <Section factor={1.5} offset={1}>
+      <group position={[0, position, 0]}>
+        <mesh ref={ref} position={[0, -35, 0]}>
+          <Model url={modelPath} />
+        </mesh>
+        <Html fullscreen portal={domContent}>
+          <div ref={refItem} className='container'>
+            <h1 className='title'>{children}</h1>
+          </div>
+        </Html>
+      </group>
+    </Section>
+  );
+};
+
+const Loader = () => {
+  const { active, progress } = useProgress();
+  const transition = useTransition(active, {
+    from: { opacity: 1, progress: 0 },
+    leave: { opacity: 0 },
+    update: { progress },
+  });
+  return transition(
+    ({ progress, opacity }, active) =>
+      active && (
+        <a.div className='loading' style={{ opacity }}>
+          <div className='loading-bar-container'>
+            <a.div className='loading-bar' style={{ width: progress }}></a.div>
+          </div>
+        </a.div>
+      )
+  );
+}
+
 
 const Home = () => {
-  const snap = useSnapshot(state);
-  
+  const [events, setEvents] = useState();
+  const domContent = useRef();
+  const scrollArea = useRef();
+  const onScroll = (e) => (state.top.current = e.target.scrollTop);
+  useEffect(() => void onScroll({ target: scrollArea.current }), []);
 
-  // Show the follower when mouse enters
-  const handleMouseEnter = () => {
-    state.isVisible = true;
-  };
 
-  // Hide the follower when mouse leaves
-  const handleMouseLeave = () => {
-    state.isVisible = false;
-  };
-
-  // Hide the follower when image is clicked
-  const handleClick = () => {
-    state.isVisible = false;
-  };
 
   return (
-    <section className="full-page flex flex-col">
-      <AnimatedText text="Home of the Government&apos;s Premier IT Contracts" />
+    <>
+      {/* <AnimatedText text="Home of the Government&apos;s Premier IT Contracts" /> */}
 
-      <AnimatePresence>
-        <div className="images container-fluid">
-          
-          <div className="row flex flex-col md:flex-row justify-between">
-            <motion.div 
-              className="relative img-container img-left md:w-[45%]" 
-              initial="initial" 
-              whileHover="animate"
-              animate="exit"
-              viewport={{ once: true, amount: 0.8 }}
-            >
-              <NavLink to="/training">
-                <motion.img
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave} 
-                  onClick={handleClick}
-                  className='transition-all rounded-md' 
-                  src={training} 
-                  alt="Training & Events" 
-                  // variants={cardVariants("left")}
-                />
-                <motion.h3 
-                  className='absolute -top-2 md:top-[20%] md:-right-[10rem] md:text-5xl text-2xl font-medium drop-shadow-lg text-slate-600'
-                  // variants={slideAnimation("left")}
-                >
-                  Training & Events
-                </motion.h3>
-              </NavLink>
+      <Canvas
+        // concurrent
+        // colorManagement
+        camera={{ position: [0, 0, 120], fov: 70 }}
+      >
+        <Lights />
 
-              < motion.p className='relative z-2 font-black -mt-16 text-6xl inline-block' variants={headContentAnimation}>01</motion.p>
-            </motion.div>
+        <Suspense fallback={null}>
+          <HTMLContent
+            domContent={domContent}
+            bgColor='#f15946'
+            modelPath='/laptop.glb'
+            position={250}>
+            <span>Meet the new </span>
+            <span>shopping experience </span>
+            <span>for online chairs</span>
+          </HTMLContent>
+          <HTMLContent
+            domContent={domContent}
+            bgColor='#571ec1'
+            modelPath='/laptop.glb'
+            position={0}>
+            <span>Shit... we even</span>
+            <span>got different colors</span>
+          </HTMLContent>
+          <HTMLContent
+            domContent={domContent}
+            bgColor='#636567'
+            modelPath='/laptop.glb'
+            position={-250}>
+            <span>And yes</span>
+            <span>we even got</span>
+            <span>monochrome!</span>
+          </HTMLContent>
+        
+        </Suspense>
+      </Canvas>
 
+      <Loader />
 
-            <motion.div 
-              className="relative img-container img-right md:w-[45%] md:mt-[40vh]"
-              initial="initial" 
-              whileHover="animate"
-              animate="exit"
-            >
-              <NavLink to="/storefront" >
-              <motion.img
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave} 
-                  onClick={handleClick}
-                  className='transition-all rounded-md' 
-                  src={storefront} 
-                  alt="Storefront & Acquisition Tools" 
-                  // variants={cardVariants("right")}
-                />
-                <motion.h3 
-                  className='absolute top-0 md:top-[50%] md:-left-[30%] text-2xl md:text-5xl font-medium drop-shadow-lg text-slate-600'
-                  // variants={slideAnimation("right")}
-                >
-                  Storefront & <br />  Acquisition Tools
-                </motion.h3>
-              </NavLink>
-              
-              <motion.p className='relative z-2 font-black -mt-16 text-6xl inline-block' variants={headContentAnimation}>02</motion.p>
-            </motion.div>
-          </div>
-
-          <div className="row flex flex-col md:flex-row justify-between">
-            <motion.div 
-              className="relative img-container img-left md:w-[45%]" 
-              initial="initial" 
-              whileHover="animate"
-              animate="exit"
-            >
-              <NavLink to="/contract-holders" >
-              <img
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave} 
-                  onClick={handleClick}
-                  className='transition-all rounded-md' 
-                  src={contract} 
-                  alt="Contract Holders & Industry Providers" 
-                />
-                <motion.h3 
-                  className='absolute top-0 md:top-[20%] md:-right-[16rem] text-2xl md:text-5xl font-medium drop-shadow-lg text-slate-600'
-                  // variants={slideAnimation("left")}
-                >
-                  Contract Holders <br /> & Industry Providers
-                </motion.h3>
-              </NavLink>
-
-              
-
-              <motion.p className='relative z-2 font-black -mt-16 text-6xl inline-block' variants={headContentAnimation}>03</motion.p>
-            </motion.div>
-
-            <motion.div 
-              className="relative img-container img-right md:w-[45%] md:mt-[40vh]"
-              initial="initial" 
-              whileHover="animate"
-              animate="exit"
-            >
-              <NavLink to="/about-sewp" >
-              <motion.img
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave} 
-                  onClick={handleClick}
-                  className='transition-all rounded-md' 
-                  src={about} 
-                  alt="About SEWP" 
-                  variants
-                />
-                <motion.h3 
-                  className='absolute top-0 md:top-[50%] md:-left-[20%] text-2xl md:text-5xl font-medium drop-shadow-lg text-slate-600'
-                  // variants={slideAnimation("right")}
-                >
-                  About SEWP
-                </motion.h3>
-              </NavLink>
-              
-              <motion.p className='relative z-2 font-black -mt-16 text-6xl inline-block' variants={headContentAnimation}>04</motion.p>
-            </motion.div>
-          </div>
-
-          <div className="row flex flex-col md:flex-row justify-between">
-            <motion.div 
-              className="relative img-container img-left md:w-[45%]" 
-              initial="initial" 
-              whileHover="animate"
-              animate="exit"
-            >
-              <NavLink to="/procurement" >
-              <motion.img
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave} 
-                  onClick={handleClick}
-                  className='transition-all rounded-md' 
-                  src={industry} 
-                  alt="Procurement Policy & Regulation" 
-                  // variants={cardVariants("left")}
-                />
-                <motion.h3 
-                  className='absolute top-0 md:top-[35%] md:-right-[16rem] text-2xl md:text-5xl font-medium drop-shadow-lg text-slate-600'
-                  // variants={slideAnimation("left")}
-                >
-                Procurement Policy <br /> & Regulation
-                </motion.h3>
-              </NavLink>
-
-              
-
-              <motion.p className='relative z-2 font-black -mt-16 text-6xl inline-block' variants={headContentAnimation}>05</motion.p>
-            </motion.div>
-          </div>
-        </div>
-      </AnimatePresence>
+      <div
+        className='scrollArea'
+        ref={scrollArea}
+        onScroll={onScroll}
+        {...events}>
+        <div style={{ position: "sticky", top: 0 }} ref={domContent} />
+        <div style={{ height: `${state.pages * 100}vh` }} />
+      </div>
       
-    </section>
+    </>
   )
 }
 
