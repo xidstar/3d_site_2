@@ -6,9 +6,9 @@ import { Section } from './components/Section';
 import { a, useTransition } from "@react-spring/web";
 import { useInView } from "react-intersection-observer";
 
-function Model({ url }) {
+function Model({ url, scale }) {
   const gltf = useGLTF(url, true)
-  return (<primitive object={gltf.scene} />)
+  return (<primitive object={gltf.scene} scale={scale} position={[0, -20, 0]} />)
 }
 
 const Lights = () => {
@@ -41,6 +41,7 @@ const HTMLContent = ({
   children,
   bgColor,
   modelPath,
+  modelScale,
   position,
 }) => {
   const ref = useRef();
@@ -58,7 +59,7 @@ const HTMLContent = ({
     <Section factor={1.5} offset={1}>
       <group position={[0, position, 0]}>
         <mesh ref={ref} position={[0, 0, 0]}>
-          <Model url={modelPath} scale={[0.1,0.1,0.1]} />
+          <Model url={modelPath} scale={modelScale}/>
         </mesh>
         <Html fullscreen portal={domContent}>
           <div ref={refItem} className='container'>
@@ -114,14 +115,16 @@ const App = () => {
           <HTMLContent
             domContent={domContent}
             bgColor='#f15946'
-            modelPath='/duck.glb'
+            modelPath='/laptop.glb'
+            modelScale={18}
             position={250}>
             <span>Training & Events</span>
           </HTMLContent>
           <HTMLContent
             domContent={domContent}
             bgColor='#571ec1'
-            modelPath='/laptop.glb'
+            modelPath='/store.glb'
+            modelScale={18}
             position={0}>
             <span>Storefront &</span>
             <span>Aquisition Tools</span>
@@ -129,10 +132,10 @@ const App = () => {
           <HTMLContent
             domContent={domContent}
             bgColor='#636567'
-            modelPath='/store.glb'
+            modelPath='/folder.glb'
+            modelScale={200}
             position={-250}>
-            <span>Contract Holders</span>
-            <span>&</span>
+            <span>Contract Holders &</span>
             <span>Industry Providers</span>
           </HTMLContent>
         
