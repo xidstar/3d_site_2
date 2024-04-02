@@ -63,7 +63,7 @@ const Cursor = () => {
                     width: '3rem',
                     height: '3rem',
                     borderRadius: '50%',
-                    border: '1px solid #333'
+                    border: '1px solid #ccc'
                 }}
             >
                 

@@ -27,7 +27,7 @@ body:has(.card[data-color="green"]:hover) {
   }
 
   .full-page {
-    @apply flex h-full w-full text-xl px-8 sm:px-16 sm:mt-32 py-10;
+    @apply flex h-full w-full text-xl px-8 sm:px-16 sm:mt-28 py-10;
   }
 
   .head-text {
@@ -119,36 +119,6 @@ li {
   cursor: pointer;
 }
 
-/* .icon-placeholder {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  flex: 40px 0;
-  margin-right: 20px;
-}
-
-.text-placeholder {
-  border-radius: 5px;
-  width: 200px;
-  height: 20px;
-  flex: 1;
-}
-
-.refresh {
-  padding: 10px;
-  position: absolute;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 10px;
-  width: 20px;
-  height: 20px;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-} */
-
 .images a:hover img {
   scale: 1.05;
   --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
@@ -197,7 +167,7 @@ body {
 html,
 body,
 #root {
-  width: 100%;
+  width: 100vw;
   height: 100%;
   margin: 0;
   padding: 0;
@@ -222,6 +192,7 @@ body,
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 .title {

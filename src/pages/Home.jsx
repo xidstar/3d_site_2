@@ -1,22 +1,21 @@
 import React, { useRef, useEffect, useState, Suspense } from "react";
-import AnimatedText from '../components/AnimatedText';
-import state from "../components/state";
+import state from "../components/state"
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Html, useGLTF, useProgress } from '@react-three/drei';
 import { Section } from '../components/Section';
 import { a, useTransition } from "@react-spring/web";
 import { useInView } from "react-intersection-observer";
 
-function Model({ url }) {
+function Model({ url, scale }) {
   const gltf = useGLTF(url, true)
-  return (<primitive object={gltf.scene} />)
+  return (<primitive object={gltf.scene} scale={scale} position={[0, -20, 0]} />)
 }
 
 const Lights = () => {
   return (
     <>
       {/* Ambient Light illuminates lights for all objects */}
-      <ambientLight intensity={0.3} />
+      <ambientLight intensity={0.6} />
       {/* Diretion light */}
       <directionalLight position={[1, 1, 5]} intensity={1} />
       <directionalLight
@@ -32,7 +31,7 @@ const Lights = () => {
         shadow-camera-bottom={-10}
       />
       {/* Spotlight Large overhead light */}
-      <spotLight intensity={1} position={[1000, 0, 0]} castShadow />
+      {/* <spotLight intensity={1} position={[100, 0, 0]} castShadow /> */}
     </>
   );
 };
@@ -42,25 +41,36 @@ const HTMLContent = ({
   children,
   bgColor,
   modelPath,
+  modelScale,
   position,
+  pageLink,
 }) => {
   const ref = useRef();
+  
   useFrame(() => (ref.current.rotation.y += 0.01));
   const [refItem, inView] = useInView({
     threshold: 0,
   });
+
   useEffect(() => {
     inView && (document.body.style.background = bgColor);
   }, [inView]);
+
   return (
     <Section factor={1.5} offset={1}>
       <group position={[0, position, 0]}>
-        <mesh ref={ref} position={[0, -35, 0]}>
-          <Model url={modelPath} />
+        <mesh ref={ref} position={[0, 0, 0]}>
+          <Model url={modelPath} scale={modelScale}/>
         </mesh>
         <Html fullscreen portal={domContent}>
           <div ref={refItem} className='container'>
             <h1 className='title'>{children}</h1>
+            <a href={pageLink} 
+              className="bg-white text-slate-900 px-3 py-2 rounded-md flex w-32 
+              justify-center items-center hover:bg-red-400 transition-all font-bold mt-5"
+            >
+              View Page
+            </a>
           </div>
         </Html>
       </group>
@@ -113,27 +123,54 @@ const Home = () => {
             domContent={domContent}
             bgColor='#f15946'
             modelPath='/laptop.glb'
-            position={250}>
-            <span>Meet the new </span>
-            <span>shopping experience </span>
-            <span>for online chairs</span>
+            modelScale={18}
+            position={250}
+            pageLink='/training'
+          >
+            <span>Training & Events</span>
           </HTMLContent>
           <HTMLContent
             domContent={domContent}
             bgColor='#571ec1'
-            modelPath='/laptop.glb'
-            position={0}>
-            <span>Shit... we even</span>
-            <span>got different colors</span>
+            modelPath='/store.glb'
+            modelScale={18}
+            position={0}
+            pageLink='/storefront'
+          >
+            <span>Storefront &</span>
+            <span>Aquisition Tools</span>
           </HTMLContent>
           <HTMLContent
             domContent={domContent}
             bgColor='#636567'
-            modelPath='/laptop.glb'
-            position={-250}>
-            <span>And yes</span>
-            <span>we even got</span>
-            <span>monochrome!</span>
+            modelPath='/folder.glb'
+            modelScale={200}
+            position={-250}
+            pageLink='/contract-holders'
+          >
+            <span>Contract Holders &</span>
+            <span>Industry Providers</span>
+          </HTMLContent>
+          <HTMLContent
+            domContent={domContent}
+            bgColor='#026512'
+            modelPath='/duck.glb'
+            modelScale={0.2}
+            position={-500}
+            pageLink='/about-sewp'
+          >
+            <span>About SEWP</span>
+          </HTMLContent>
+          <HTMLContent
+            domContent={domContent}
+            bgColor='#5d0265'
+            modelPath='/judge_gavel.glb'
+            modelScale={40}
+            position={-750}
+            pageLink='/procurement'
+          >
+            <span>Procurement Policy</span>
+            <span>& Regulation</span>
           </HTMLContent>
         
         </Suspense>
@@ -154,4 +191,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Home;
