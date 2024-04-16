@@ -41,7 +41,6 @@ const SideMenu = () => {
                         <motion.div className="background" variants={sidebar} />
                         <Navigation />
                     </motion.nav>
-                    {/* <Navigation /> */}
                 </div>
             )}
         </>
